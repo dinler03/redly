@@ -1,0 +1,15 @@
+Redly is a fast, minimal, read-only Reddit client for Android. It uses Reddit's public RSS/JSON feeds instead of the official API, so you can browse without an account, without API limits, and without giving up your privacy.
+
+Redly is built around a simple idea: Reddit, quietly. No noise, no notifications, no ads, no tracking — just a clean reading experience.
+
+Features:
+
+* Browse posts, comments, subreddits and users
+* View images, GIFs, galleries and videos
+* Follow your favorite communities locally
+* Save images to your device
+* Share posts (optionally as old.reddit links)
+* Search for posts, subreddits and users
+* Material Design 3 dark theme with the "Ember Dark" palette
+* Open Reddit links from other apps directly inside Redly
+* Fully local — no account, no telemetry

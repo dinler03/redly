@@ -1,0 +1,30 @@
+/* REDLY — Ember Dark Palette
+ * Brand: Redly
+ * Tone: Engineered, quiet, fast
+ */
+
+:root {
+    /* Surface scale */
+    --ink-950: #0B0D10;
+    --ink-900: #13161B;
+    --ink-800: #1C2026;
+    --ink-700: #2A2F38;
+    --ink-600: #3A4150;
+    --ink-500: #515968;
+    --ink-400: #717988;
+    --ink-300: #A8B0BC;
+    --ink-200: #C8CFD9;
+    --ink-100: #E8EAF0;
+    --ink-50: #FFFFFF;
+
+    /* Brand accents */
+    --ember: #FF5A36;
+    --ember-soft: #FF8264;
+    --ember-deep: #D93D1E;
+
+    /* Semantic */
+    --redly-success: #4ADE80;
+    --redly-danger: #F87171;
+    --redly-warning: #FBBF24;
+    --redly-info: #60A5FA;
+}

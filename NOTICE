@@ -1,0 +1,86 @@
+================================================================================
+                                  Redly
+                              Reddit, quietly.
+================================================================================
+
+Redly
+Copyright (C) 2026 dinler03 and the Redly contributors.
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with
+this program. If not, see <https://www.gnu.org/licenses/>.
+
+The full license text is included in the LICENSE file at the root of this
+repository.
+
+--------------------------------------------------------------------------------
+                                ATTRIBUTION
+--------------------------------------------------------------------------------
+
+Redly is a fork and rebrand of Geddit, originally created by kaangiray26.
+
+    Original project : https://github.com/kaangiray26/geddit-app
+    Original author  : kaangiray26
+    Original license : GNU General Public License v3.0 or later
+
+The original Geddit copyright is preserved in full and continues to apply to
+all code inherited from the upstream project. Modifications, additions, and
+new files contributed under the Redly name are released under the same
+GPL-3.0-or-later license.
+
+A summary of the changes that distinguish Redly from upstream Geddit is
+maintained in the CHANGELOG.md file at the root of this repository.
+
+--------------------------------------------------------------------------------
+                          REDISTRIBUTION REQUIREMENTS
+--------------------------------------------------------------------------------
+
+If you redistribute Redly — whether as source code, as a compiled APK, or as
+part of a larger work — you MUST:
+
+  1. Preserve this NOTICE file unchanged.
+  2. Preserve the LICENSE file unchanged (the full text of GPL-3.0).
+  3. Make the corresponding source code available to your recipients, as
+     required by sections 4, 5, and 6 of the GNU GPL v3.
+  4. State the significant changes you have made to the code, where
+     appropriate (GPL v3, section 5(a)).
+  5. Not impose any further restrictions on the rights granted to your
+     recipients by the GNU GPL.
+
+This NOTICE file is informational. It explains how the project's history
+relates to its current form, and what redistributors are expected to do. The
+legally binding terms governing your rights and obligations are the ones
+written in LICENSE.
+
+--------------------------------------------------------------------------------
+                              THIRD-PARTY NOTICES
+--------------------------------------------------------------------------------
+
+Redly bundles and depends on a number of third-party open-source libraries.
+Each one retains its own copyright and license. The full list is generated
+from package.json and node_modules at build time. Notable runtime dependencies
+include:
+
+  - Vue.js                   (MIT)
+  - Vue Router               (MIT)
+  - Vite                     (MIT)
+  - Capacitor (core, plugins)(MIT)
+  - Bootstrap                (MIT)
+  - hls.js                   (Apache-2.0)
+  - marked                   (MIT)
+  - showdown                 (MIT)
+  - fuse.js                  (Apache-2.0)
+  - hammer.js                (MIT)
+  - Material Icons font      (Apache-2.0, bundled under src/public/fonts/)
+
+These licenses are compatible with GPL-3.0-or-later. None of them impose
+attribution requirements that conflict with the terms above.

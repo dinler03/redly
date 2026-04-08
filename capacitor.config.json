@@ -1,0 +1,13 @@
+{
+  "appId": "app.redly.client",
+  "appName": "Redly",
+  "webDir": "src/dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": false
+    }
+  }
+}

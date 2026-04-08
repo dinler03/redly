@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/dinler03/redly#readme
+    about: Read the README for usage and development instructions.
+  - name: Architectural notes
+    url: https://github.com/dinler03/redly/blob/main/ARCHITECTURE.md
+    about: See ARCHITECTURE.md for an architectural overview.
