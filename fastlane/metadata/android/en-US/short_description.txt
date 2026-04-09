@@ -1,1 +1,1 @@
-An open-source, Reddit client for Android without using their API
+An open-source, read-only Reddit client for Android — no account, no API key

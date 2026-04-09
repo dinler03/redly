@@ -1,0 +1,8 @@
+Initial Redly release — a fork and rebrand of Geddit.
+
+* New "Ember Dark" Material Design 3 palette and brand identity.
+* Locally bundled Material Icons — fully offline, no Google Fonts CDN.
+* 10-second timeout on Reddit fetches so the UI no longer hangs offline.
+* New empty state for the Following feed with an "Explore" hint.
+* English and Turkish UI.
+* In-app update checker via GitHub Releases.

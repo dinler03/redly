@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 500" width="1024" height="500">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B0D10"/>
+      <stop offset="60%" stop-color="#13161B"/>
+      <stop offset="100%" stop-color="#1B1F26"/>
+    </linearGradient>
+    <linearGradient id="ember" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF8264"/>
+      <stop offset="100%" stop-color="#FF5A36"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FF5A36" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#FF5A36" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="500" fill="url(#bg)"/>
+
+  <!-- Ember glow behind icon -->
+  <circle cx="220" cy="250" r="260" fill="url(#glow)"/>
+
+  <!-- App icon, scaled & translated from the source 256x256 SVG -->
+  <g transform="translate(80, 110) scale(1.094)">
+    <rect width="256" height="256" rx="56" fill="#0B0D10"/>
+    <path d="M80 56 H156 a44 44 0 0 1 44 44 v4 a44 44 0 0 1 -32 42.3 L204 200 H166 L134 152 H112 V200 H80 Z M112 88 V120 H152 a16 16 0 0 0 16 -16 v0 a16 16 0 0 0 -16 -16 Z" fill="url(#ember)"/>
+    <circle cx="188" cy="76" r="7" fill="#FF8264"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="430" y="265"
+        font-family="DejaVu Sans, Liberation Sans, sans-serif"
+        font-size="160"
+        font-weight="700"
+        fill="#F5F5F5"
+        letter-spacing="-4">Redly</text>
+
+  <!-- Tagline -->
+  <text x="434" y="320"
+        font-family="DejaVu Sans, Liberation Sans, sans-serif"
+        font-size="36"
+        font-weight="400"
+        fill="#FF8264"
+        font-style="italic">Reddit, quietly.</text>
+
+  <!-- Subtitle -->
+  <text x="434" y="370"
+        font-family="DejaVu Sans, Liberation Sans, sans-serif"
+        font-size="26"
+        font-weight="400"
+        fill="#9AA0A6">A fast, minimal, read-only Reddit client</text>
+</svg>

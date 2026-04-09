@@ -1,15 +1,25 @@
-Redly is a fast, minimal, read-only Reddit client for Android. It uses Reddit's public RSS/JSON feeds instead of the official API, so you can browse without an account, without API limits, and without giving up your privacy.
+Redly is a fast, minimal, read-only Reddit client for Android.
 
-Redly is built around a simple idea: Reddit, quietly. No noise, no notifications, no ads, no tracking — just a clean reading experience.
+It uses Reddit's public JSON feeds instead of the official API, so you can browse without an account, without API rate limits, and without giving up your privacy. There is no login screen, no notifications, no ads, no analytics, and no tracking — just a clean reading experience.
+
+Redly is a fork of the original Geddit project (also GPL-3.0), with a refreshed identity, the Ember Dark Material Design 3 palette, an English and Turkish UI, an in-app update checker that talks directly to GitHub Releases, and a number of bug fixes.
 
 Features:
 
 * Browse posts, comments, subreddits and users
-* View images, GIFs, galleries and videos
-* Follow your favorite communities locally
-* Save images to your device
-* Share posts (optionally as old.reddit links)
-* Search for posts, subreddits and users
-* Material Design 3 dark theme with the "Ember Dark" palette
+* View images, GIFs, galleries, and HLS-streamed videos
+* Follow your favorite communities locally — no account required
+* Save posts and images to your device
+* Linear comment trees with collapse and expand
+* Share posts as standard or old.reddit.com links
+* Search for posts, subreddits, and users
 * Open Reddit links from other apps directly inside Redly
-* Fully local — no account, no telemetry
+* Material Design 3 dark theme — the "Ember Dark" palette
+* Self-contained Material Icons font (no Google Fonts CDN at runtime)
+* English and Turkish interface
+* Optional automatic in-app update check via GitHub Releases
+* Fully local: no telemetry, no tracking, no analytics
+
+Redly is built with Vue 3, Vite, and Capacitor 5, and is released under the GNU General Public License v3.0 or later.
+
+Redly is an unofficial, third-party Reddit client. It is not affiliated with, endorsed by, or sponsored by Reddit, Inc. All Reddit content displayed in Redly belongs to its respective authors and is subject to Reddit's content policies.
