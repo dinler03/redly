@@ -31,6 +31,12 @@ require a Reddit account or API key, and it is not subject to OAuth rate limits.
 Redly is built with **Vue 3**, **Vite**, and **Capacitor 5**, and is currently
 distributed as an Android application.
 
+## Screenshots
+
+| Home | Post | Subreddit | Settings |
+|:---:|:---:|:---:|:---:|
+| ![Home — popular feed](docs/screenshots/01-home.png) | ![Post detail with comments](docs/screenshots/02-post.png) | ![Subreddit view](docs/screenshots/03-subreddit.png) | ![Profile and settings](docs/screenshots/04-settings.png) |
+
 ## Features
 
 - Browse posts, comments, subreddits, and users
