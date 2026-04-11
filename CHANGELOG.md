@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] — 2026-04-11
+
 ### Changed
 
 - The "Check for updates" setting is now **off by default** on new
@@ -14,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   that Redly will reach out to `api.github.com` and that this bypasses
   F-Droid's update mechanism if Redly was installed from F-Droid. Existing
   users keep their previous preference.
+- Gradle wrapper upgraded from 8.0.2 to 8.7 (JDK 21 compatibility).
+- Android Gradle Plugin upgraded from 8.0.0 to 8.2.0.
+- `compileSdkVersion` and `targetSdkVersion` bumped from 33 to 34.
 
 ### Removed
 
@@ -75,5 +80,6 @@ original GPL-3.0 copyright is preserved in [`LICENSE`](./LICENSE) and
 - Legacy build helpers (`deploy.sh`, `vue.config.js`) — replaced by the
   GitHub Actions workflows.
 
-[Unreleased]: https://github.com/dinler03/redly/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/dinler03/redly/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/dinler03/redly/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/dinler03/redly/releases/tag/v0.1.0
