@@ -23,7 +23,7 @@
             <div v-if="post.over_18" class="d-flex dpb-16">
                 <div class="chips-container bg-11 border-0">
                     <span class=" material-icons">18_up_rating</span>
-                    <span class="label-large">NSFW</span>
+                    <span class="label-large">{{ t('nsfw') }}</span>
                 </div>
             </div>
             <div class="d-flex align-items-center">
@@ -56,6 +56,7 @@
 import { useRouter } from 'vue-router';
 import { store, hide, unhide } from '/js/store.js';
 import { t } from '/js/i18n.js';
+import { format_relative_time } from '/js/util.js';
 
 const router = useRouter();
 
@@ -92,20 +93,9 @@ async function open_subreddit() {
     router.push(`/r/${props.post.subreddit}`);
 }
 
-// Return when the post was created
-// Format: 1h ago, 1d ago, 1w ago, 1m ago, 1y ago
+// Return when the comment was created (localised via i18n)
 function format_date() {
-    let dt = new Date(props.post.created * 1000);
-    let now = new Date();
-
-    let diff = now - dt;
-
-    if (diff < 1000 * 60 * 60) return `${Math.floor(diff / (1000 * 60))}m ago`;
-    if (diff < 1000 * 60 * 60 * 24) return `${Math.floor(diff / (1000 * 60 * 60))}h ago`;
-    if (diff < 1000 * 60 * 60 * 24 * 7) return `${Math.floor(diff / (1000 * 60 * 60 * 24))}d ago`;
-    if (diff < 1000 * 60 * 60 * 24 * 30) return `${Math.floor(diff / (1000 * 60 * 60 * 24 * 7))}w ago`;
-    if (diff < 1000 * 60 * 60 * 24 * 365) return `${Math.floor(diff / (1000 * 60 * 60 * 24 * 30))}m ago`;
-    return `${Math.floor(diff / (1000 * 60 * 60 * 24 * 365))}y ago`;
+    return format_relative_time(props.post.created);
 }
 
 function decodeHtml(html) {

@@ -44,6 +44,8 @@ import { useRouter } from 'vue-router';
 import { Modal } from "bootstrap"
 import { Toast } from '@capacitor/toast';
 import Hammer from 'hammerjs';
+import { t } from '/js/i18n.js';
+import { ensure_storage_permission } from '/js/util.js';
 
 const router = useRouter();
 
@@ -117,43 +119,38 @@ async function comments() {
 }
 
 async function download() {
-    // Get file name
-    let fname = `${Date.now()}_${data.value.id}.jpg`;
+    if (!(await ensure_storage_permission(Filesystem, Toast))) return;
 
-    //Get image data
-    Toast.show({
-        text: "Downloading..."
-    })
+    const fname = `${Date.now()}_${data.value.id}.jpg`;
 
-    let response = await CapacitorHttp.get({
+    await Toast.show({ text: t('downloading'), duration: 'short' });
+
+    const response = await CapacitorHttp.get({
         url: data.value.src,
         responseType: 'blob',
-        headers: {
-            'Accept': 'image/jpeg'
-        },
-        connectTimeout: 1000
-    })
-        .catch(err => null);
+        headers: { 'Accept': 'image/jpeg' }
+    }).catch(() => null);
 
-    if (!response) {
-        await Toast.show({
-            text: "Download failed!"
-        })
-        return
-    };
+    if (!response || response.status >= 400 || !response.data) {
+        await Toast.show({ text: t('download_failed'), duration: 'short' });
+        return;
+    }
 
-    let image_data = "data:image/jpeg;base64," + response.data;
-    Filesystem.writeFile({
-        path: `Redly/${fname}`,
-        data: image_data,
-        directory: Directory.External,
-        recursive: true
-    })
-        .then((res) => {
-            Toast.show({
-                text: "Download complete: " + fname
-            })
+    try {
+        await Filesystem.writeFile({
+            path: `Pictures/Redly/${fname}`,
+            data: response.data,
+            directory: Directory.ExternalStorage,
+            recursive: true
         });
+        await Toast.show({
+            text: t('download_complete').replace('{name}', fname),
+            duration: 'short'
+        });
+    } catch (e) {
+        console.error('Image save failed', e);
+        await Toast.show({ text: t('save_failed'), duration: 'short' });
+    }
 }
 
 function is_open() {

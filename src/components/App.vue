@@ -19,6 +19,7 @@ import { ref, computed, onBeforeMount, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { save_hidden } from '/js/store.js';
 import { t } from '/js/i18n.js';
+import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { App } from '@capacitor/app';
 import { Toast } from '@capacitor/toast';
@@ -120,6 +121,19 @@ onBeforeMount(() => {
             directory: Directory.Documents
         })
     })
+
+    // Proactively request public-storage permission once at startup so the
+    // OS dialog appears before the user triggers a download. Only runs on
+    // native Android/iOS where the check is meaningful.
+    if (Capacitor.getPlatform() === 'android') {
+        Filesystem.checkPermissions()
+            .then(perm => {
+                if (perm.publicStorage !== 'granted') {
+                    return Filesystem.requestPermissions();
+                }
+            })
+            .catch(() => { /* ignore — plugin may not support on this OS */ });
+    }
 })
 
 onMounted(() => {

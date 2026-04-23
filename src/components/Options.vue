@@ -4,10 +4,10 @@
             data-bs-toggle="dropdown" aria-expanded="false"></button>
         <ul class="dropdown-menu foreground theme-shadow">
             <li>
-                <h6 class="dropdown-header">Options</h6>
+                <h6 class="dropdown-header">{{ t('options') }}</h6>
             </li>
             <li>
-                <button class="btn btn-touch dropdown-item text-4" @click.passive="refresh">Refresh</button>
+                <button class="btn btn-touch dropdown-item text-4" @click.passive="refresh">{{ t('options_refresh') }}</button>
             </li>
         </ul>
     </div>
@@ -15,6 +15,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
+import { t } from '/js/i18n.js';
 
 const router = useRouter();
 const emit = defineEmits(["show", "hide", "refresh"]);

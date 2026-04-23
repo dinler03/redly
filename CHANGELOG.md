@@ -7,17 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.1] — 2026-04-11
+## [0.1.1] — 2026-04-23
 
 ### Changed
 
+- **Capacitor 5 → 8**: upgraded `@capacitor/android`, `@capacitor/core`,
+  `@capacitor/cli` and all first-party Capacitor plugins to v8.
+- **Android SDK target raised**: `compileSdkVersion` and `targetSdkVersion`
+  bumped from 33 → 36 (required by the new AndroidX libraries).
+  `minSdkVersion` raised from 22 → 24 (required by cordova-android 14).
+- **Android build toolchain**: Android Gradle Plugin 8.2.0 → 8.13.0;
+  Gradle wrapper 8.7 → 8.14.
+- **AndroidX library versions** updated to match Capacitor 8 defaults:
+  `activity` 1.7.0 → 1.11.0, `appcompat` 1.6.1 → 1.7.1,
+  `core` 1.13.1 → 1.17.0, `fragment` 1.5.6 → 1.8.9,
+  `webkit` 1.6.1 → 1.14.0, and others.
+- **Vue 3.3 → 3.5.33**, **vue-router 4 → 5**, **@vueuse/core 10 → 14**.
+- **fuse.js 6 → 7**, **hls.js 1.4 → 1.6**.
+- **Vite 4 → 8**, **@vitejs/plugin-vue 4 → 6**, **sass 1.64 → 1.99**,
+  **@capacitor/assets 2 → 3**.
 - The "Check for updates" setting is now **off by default** on new
   installs. When users enable it manually, a confirmation dialog explains
   that Redly will reach out to `api.github.com` and that this bypasses
   F-Droid's update mechanism if Redly was installed from F-Droid. Existing
   users keep their previous preference.
-- Gradle wrapper upgraded from 8.0.2 to 8.7 (JDK 21 compatibility).
-- Android Gradle Plugin upgraded from 8.0.0 to 8.2.0.
 
 ### Removed
 

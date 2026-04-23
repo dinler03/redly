@@ -519,6 +519,32 @@ option[selected] {
     bottom: 92px;
 }
 
+.video-download {
+    position: absolute;
+    left: 16px;
+    bottom: 156px;
+}
+
+.gallery-download-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.gallery-download-btn .material-icons {
+    font-size: 1.2rem;
+}
+
 .video-wrapper:fullscreen>video {
     object-fit: contain !important;
 }

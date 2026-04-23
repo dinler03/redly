@@ -3,7 +3,7 @@
         :style="{ 'aspect-ratio': dimensions.width + '/' + dimensions.height + '!important' }">
         <div ref="wrapper" class="video-wrapper">
             <video ref="video" class="position-relative ct" :poster="get_poster()" muted loop playsinline
-                webkit-playsinline preload="metadata" @click.prevent="emit('open_post')">
+                webkit-playsinline preload="metadata" @click.prevent="handle_video_click">
             </video>
             <div v-if="paused" class="video-paused">
                 <div class="md-icon-button md-foreground-50 el-3 ct" @click.passive="play">
@@ -62,6 +62,7 @@
 import { ref, onBeforeUnmount, onBeforeMount, onMounted, onDeactivated } from 'vue';
 import Hls from 'hls.js';
 import { useIntersectionObserver } from '@vueuse/core'
+import { create_click_debouncer } from '/js/util.js';
 
 let hls = null;
 const video = ref(null);
@@ -99,6 +100,30 @@ const props = defineProps({
 async function mute() {
     video.value.muted = !video.value.muted;
 }
+
+async function request_fullscreen() {
+    const el = wrapper.value;
+    if (!el) return;
+    try {
+        if (el.requestFullscreen) await el.requestFullscreen();
+        else if (el.webkitRequestFullscreen) await el.webkitRequestFullscreen();
+        else if (video.value && video.value.webkitEnterFullscreen) {
+            video.value.webkitEnterFullscreen();
+        }
+        if (video.value) {
+            video.value.muted = false;
+            await video.value.play().catch(() => {});
+        }
+    } catch (err) {
+        console.warn('fullscreen request failed', err);
+    }
+}
+
+// Single click → open post detail; double click → enter fullscreen
+const handle_video_click = create_click_debouncer(
+    () => emit('open_post'),
+    () => request_fullscreen()
+);
 
 async function play() {
     if (!video.value || play_promise.value) return

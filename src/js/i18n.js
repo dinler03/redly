@@ -90,6 +90,24 @@ const translations = {
         // Gallery
         gallery: "Gallery",
         no_images: "No images found.",
+        download: "Download",
+        download_selected: "Download ({n})",
+        saved_to_gallery: "Saved: Redly/{name}",
+        download_failed: "Download failed",
+        images_saved: "{n} image(s) saved",
+        some_failed: "Some images could not be downloaded",
+        permission_denied: "Storage permission denied",
+
+        // Video download
+        video_url_missing: "Video URL not found",
+        downloading: "Downloading...",
+        video_saved: "Video saved: Redly/{name}",
+        save_failed: "Save failed",
+
+        // Poll
+        poll_active: "Ongoing",
+        poll_ended: "Ended",
+        poll_votes: "{n} votes",
 
         // Saved
         saved_posts: "Saved Posts",
@@ -103,6 +121,29 @@ const translations = {
 
         // App
         press_back: "Press back again to exit",
+
+        // Date format (relative time)
+        ago_minutes: "{n}m ago",
+        ago_hours: "{n}h ago",
+        ago_days: "{n}d ago",
+        ago_weeks: "{n}w ago",
+        ago_months: "{n}mo ago",
+        ago_years: "{n}y ago",
+
+        // ImageViewer
+        download_complete: "Saved: {name}",
+
+        // Options dropdown
+        options: "Options",
+        options_refresh: "Refresh",
+
+        // UpdateManager
+        update_body_info: "Clicking the update button will download the latest release from our GitHub repository and bypass F-Droid's checks if you have downloaded the app from there.",
+        update_close: "Close",
+
+        // Settings — branding
+        app_tagline: "Reddit, quietly.",
+        contributors: "Redly Contributors",
 
         // Misc
         image_missing: "Image Missing",
@@ -194,6 +235,24 @@ const translations = {
         // Gallery
         gallery: "Galeri",
         no_images: "Görsel bulunamadı.",
+        download: "İndir",
+        download_selected: "İndir ({n})",
+        saved_to_gallery: "Kaydedildi: Redly/{name}",
+        download_failed: "İndirme başarısız",
+        images_saved: "{n} görsel kaydedildi",
+        some_failed: "Bazı görseller indirilemedi",
+        permission_denied: "Depolama izni reddedildi",
+
+        // Video download
+        video_url_missing: "Video URL bulunamadı",
+        downloading: "İndiriliyor...",
+        video_saved: "Video kaydedildi: Redly/{name}",
+        save_failed: "Kaydetme başarısız",
+
+        // Poll
+        poll_active: "Devam ediyor",
+        poll_ended: "Tamamlandı",
+        poll_votes: "{n} oy",
 
         // Saved
         saved_posts: "Kaydedilen Gönderiler",
@@ -207,6 +266,29 @@ const translations = {
 
         // App
         press_back: "Çıkmak için tekrar geri basın",
+
+        // Date format (relative time)
+        ago_minutes: "{n}dk önce",
+        ago_hours: "{n}sa önce",
+        ago_days: "{n}g önce",
+        ago_weeks: "{n}h önce",
+        ago_months: "{n}ay önce",
+        ago_years: "{n}y önce",
+
+        // ImageViewer
+        download_complete: "Kaydedildi: {name}",
+
+        // Options dropdown
+        options: "Seçenekler",
+        options_refresh: "Yenile",
+
+        // UpdateManager
+        update_body_info: "Güncelle düğmesine basmanız GitHub deposundan en son sürümü indirecektir. Eğer uygulamayı F-Droid üzerinden yüklediyseniz, bu işlem F-Droid'in güncelleme kontrolünü atlar.",
+        update_close: "Kapat",
+
+        // Settings — branding
+        app_tagline: "Reddit, sessizce.",
+        contributors: "Redly Katkıda Bulunanları",
 
         // Misc
         image_missing: "Görsel Bulunamadı",

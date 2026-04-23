@@ -7,7 +7,7 @@
     <a href="https://github.com/dinler03/redly/releases/latest"><img src="https://img.shields.io/github/v/release/dinler03/redly?color=ef6c1a&label=release" alt="Latest release"></a>
     <a href="https://github.com/dinler03/redly/actions/workflows/build.yml"><img src="https://github.com/dinler03/redly/actions/workflows/build.yml/badge.svg" alt="Build status"></a>
     <a href="./LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg" alt="License: GPL-3.0-or-later"></a>
-    <img src="https://img.shields.io/badge/platform-Android%205.1%2B-3ddc84?logo=android&logoColor=white" alt="Platform: Android 5.1+">
+    <img src="https://img.shields.io/badge/platform-Android%207.0%2B-3ddc84?logo=android&logoColor=white" alt="Platform: Android 7.0+">
     <img src="https://img.shields.io/badge/built%20with-Vue%203%20%2B%20Capacitor-42b883?logo=vue.js&logoColor=white" alt="Built with Vue 3 and Capacitor">
   </p>
 </div>
@@ -28,7 +28,7 @@ clean reading experience.
 It uses Reddit's public JSON feeds instead of the official API, so it does not
 require a Reddit account or API key, and it is not subject to OAuth rate limits.
 
-Redly is built with **Vue 3**, **Vite**, and **Capacitor 5**, and is currently
+Redly is built with **Vue 3**, **Vite**, and **Capacitor 8**, and is currently
 distributed as an Android application.
 
 ## Screenshots
@@ -55,7 +55,7 @@ distributed as an Android application.
 
 ## Requirements
 
-- **Android 5.1 (API 22)** or newer
+- **Android 7.0 (API 24)** or newer
 - ~10 MB of free storage
 - An internet connection (the app does not cache feeds offline)
 
@@ -117,10 +117,10 @@ For a deeper walkthrough of the architecture, the directory layout, the
 | Layer        | Technology |
 |--------------|------------|
 | Framework    | Vue 3 (Composition API, `<script setup>`) |
-| Build        | Vite 4 |
-| Mobile shell | Capacitor 5 (Android) |
+| Build        | Vite 8 |
+| Mobile shell | Capacitor 8 (Android) |
 | HTTP         | `CapacitorHttp.request()` (native), Vite proxy (web) |
-| Routing      | Vue Router 4 |
+| Routing      | Vue Router 5 |
 | Styling      | Bootstrap 5 SCSS + Material Design 3 + Ember Dark palette |
 | State        | Vue `reactive()` + `localStorage` |
 | Markdown     | `marked`, `showdown` |

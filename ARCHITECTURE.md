@@ -12,7 +12,7 @@ code, the code wins, and this file should be updated.
 Redly is a read-only Reddit client for Android, built on top of Reddit's
 public RSS/JSON feeds. It does not require a Reddit account, does not store
 credentials, and does not collect telemetry. The application is shipped as a
-single-screen Vue 3 web app wrapped in a Capacitor 5 Android shell.
+single-screen Vue 3 web app wrapped in a Capacitor 8 Android shell.
 
 The product goal is **"Reddit, quietly"** — minimal chrome, no notifications,
 no ads, no auth flows.
@@ -24,11 +24,11 @@ no ads, no auth flows.
 | Layer        | Technology |
 |--------------|------------|
 | Framework    | Vue 3 (Composition API, `<script setup>`) |
-| Build tool   | Vite 4 |
-| Mobile shell | Capacitor 5 (Android only) |
-| Routing      | Vue Router 4 |
+| Build tool   | Vite 8 |
+| Mobile shell | Capacitor 8 (Android only) |
+| Routing      | Vue Router 5 |
 | State        | Vue `reactive()` + `localStorage` (no Pinia / Vuex) |
-| HTTP         | `CapacitorHttp.request()` on native, Vite `/reddit-api` proxy on web |
+| HTTP         | `CapacitorHttp.request()` on native, Vite `/reddit-api` proxy on web (v8 plugin API) |
 | Styling      | Bootstrap 5 (SCSS) + Material Design 3 classes + Ember Dark palette |
 | Markdown     | `marked`, `showdown` |
 | Video        | `hls.js` |
@@ -41,10 +41,10 @@ no ads, no auth flows.
 | Setting        | Value |
 |----------------|-------|
 | `applicationId` | `app.redly.client` |
-| `minSdkVersion` | 22 (Android 5.1 Lollipop) |
-| `targetSdkVersion` | 33 (Android 13) |
-| `compileSdkVersion` | 33 |
-| `versionName` / `versionCode` | `0.1.0` / `1` |
+| `minSdkVersion` | 24 (Android 7.0 Nougat) |
+| `targetSdkVersion` | 36 (Android 16) |
+| `compileSdkVersion` | 36 |
+| `versionName` / `versionCode` | `0.1.1` / `2` |
 
 These values live in `android/variables.gradle` and `android/app/build.gradle`.
 

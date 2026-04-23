@@ -147,7 +147,7 @@
                 <div class="d-flex flex-column align-items-center">
                     <img src="/images/icon.svg" class="snoovatar">
                     <span class="body-large text-6 text-shadow">Redly</span>
-                    <span class="label-small text-4 fst-italic dpt-4">Reddit, quietly.</span>
+                    <span class="label-small text-4 fst-italic dpt-4">{{ t('app_tagline') }}</span>
                 </div>
             </div>
             <div class="d-flex flex-column text-4 dpt-4">
@@ -155,7 +155,7 @@
                     <span class="label-medium fst-italic">{{ t('made_by') }}</span>
                     <div class="d-flex align-items-center dpt-4">
                         <span class="material-icons dpe-4">favorite</span>
-                        <span class="label-medium">Redly Contributors</span>
+                        <span class="label-medium">{{ t('contributors') }}</span>
                     </div>
                 </div>
             </div>

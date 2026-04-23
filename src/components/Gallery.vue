@@ -14,14 +14,24 @@
                         <span>{{ t('delete_action') }}</span>
                     </div>
                 </button>
+                <button class="btn btn-touch ms-2" @click.passive="download_selected" :disabled="!selected_items.length">
+                    <div class="d-flex flex-column text-6 btn-touch">
+                        <span class="material-icons" style="font-size:1.1rem">download</span>
+                        <span>{{ selected_items.length ? t('download_selected').replace('{n}', selected_items.length) : t('download') }}</span>
+                    </div>
+                </button>
             </div>
         </div>
         <div class="row row-cols-4 g-1">
-            <div v-for="image in images" class="col col-gallery">
+            <div v-for="image in images" class="col col-gallery position-relative">
                 <img :src="image.src" class="img-gallery" @click.passive="clicked(image)"
                     @contextmenu.prevent="right_clicked(image)">
                 <div v-show="edit_mode" class="position-absolute top-0 start-0 m-2">
                     <div class="theme-shadow" :class="get_edit_style(image)" />
+                </div>
+                <div v-show="!edit_mode" class="gallery-download-btn"
+                    @click.stop="download_single(image)">
+                    <span class="material-icons">download</span>
                 </div>
             </div>
         </div>
@@ -33,32 +43,72 @@ import { ref, onActivated, onDeactivated } from 'vue';
 import { t } from '/js/i18n.js';
 import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Toast } from '@capacitor/toast';
 import { open_gallery_viewer } from "/js/event.js";
+import { ensure_storage_permission } from '/js/util.js';
 
 const images = ref([]);
 const edit_mode = ref(false);
 const selected_items = ref([]);
 
-async function delete_image(fname) {
-    new Promise(async (resolve, reject) => {
-        await Filesystem.deleteFile({
-            path: "redly/" + fname,
+async function download_single(image) {
+    if (!(await ensure_storage_permission(Filesystem, Toast))) return false;
+    try {
+        const file = await Filesystem.readFile({
+            path: `redly/${image.name}`,
             directory: Directory.Documents
         });
-        resolve();
-    })
+        await Filesystem.writeFile({
+            path: `Pictures/Redly/${image.name}`,
+            data: file.data,
+            directory: Directory.ExternalStorage,
+            recursive: true
+        });
+        Toast.show({ text: t('saved_to_gallery').replace('{name}', image.name), duration: 'short' });
+        return true;
+    } catch (e) {
+        Toast.show({ text: t('download_failed'), duration: 'short' });
+        console.error(e);
+        return false;
+    }
+}
+
+async function download_selected() {
+    if (!selected_items.value.length) return;
+    if (!(await ensure_storage_permission(Filesystem, Toast))) return;
+    const items = [...selected_items.value];
+    let ok = 0;
+    for (const name of items) {
+        const image = images.value.find(i => i.name === name);
+        if (!image) continue;
+        // sequential to avoid permission race & high base64 memory
+        const success = await download_single(image);
+        if (success) ok++;
+    }
+    if (ok === items.length) {
+        Toast.show({ text: t('images_saved').replace('{n}', ok), duration: 'short' });
+    } else {
+        Toast.show({ text: t('some_failed'), duration: 'short' });
+    }
+}
+
+async function delete_image(fname) {
+    return Filesystem.deleteFile({
+        path: "redly/" + fname,
+        directory: Directory.Documents
+    });
 }
 
 async function delete_images() {
-    let items = selected_items.value;
-
-    Promise.all(items.map(item => delete_image(item)))
-        .then(() => {
-            console.log("All items deleted.");
-            edit_mode.value = false;
-            selected_items.value = [];
-            load_images();
-        });
+    const items = [...selected_items.value];
+    try {
+        await Promise.all(items.map(item => delete_image(item)));
+    } catch (e) {
+        console.error("Delete failed", e);
+    }
+    edit_mode.value = false;
+    selected_items.value = [];
+    await load_images();
 }
 
 function get_edit_style(image) {

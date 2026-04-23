@@ -20,6 +20,12 @@
                         <span class="material-icons">{{ muted ? 'volume_off' : 'volume_up' }}</span>
                     </div>
                 </div>
+                <div class="video-download">
+                    <div class="md-icon-button md-foreground-50 el-3" @click.passive="download">
+                        <span v-if="downloading" class="material-icons">hourglass_top</span>
+                        <span v-else class="material-icons">download</span>
+                    </div>
+                </div>
                 <div class="d-flex flex-column px-3 pb-5 position-relative" @touchstart.passive="progress_start"
                     @touchmove.passive="progress_move" @touchend.passive="progress_end">
                     <div ref="progress" class="video-progress position-relative">
@@ -41,6 +47,11 @@
 import { ref, onBeforeUnmount, onBeforeMount, onMounted, onDeactivated } from 'vue';
 import Hls from 'hls.js';
 import { useIntersectionObserver } from '@vueuse/core'
+import { CapacitorHttp } from '@capacitor/core';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Toast } from '@capacitor/toast';
+import { t } from '/js/i18n.js';
+import { ensure_storage_permission } from '/js/util.js';
 
 let hls = null;
 const video = ref(null);
@@ -59,6 +70,7 @@ const muted = ref(true);
 const has_audio = ref(false);
 const is_fullscreen = ref(false);
 const controls_visible = ref(true);
+const downloading = ref(false);
 const portrait = window.matchMedia("(orientation: portrait)")
 
 const dimensions = ref({
@@ -76,6 +88,42 @@ const props = defineProps({
 
 async function mute() {
     video.value.muted = !video.value.muted;
+}
+
+async function download() {
+    if (downloading.value) return;
+    const fallback_url = props.data.secure_media?.reddit_video?.fallback_url;
+    if (!fallback_url) {
+        Toast.show({ text: t('video_url_missing'), duration: 'short' });
+        return;
+    }
+    if (!(await ensure_storage_permission(Filesystem, Toast))) return;
+    downloading.value = true;
+    Toast.show({ text: t('downloading'), duration: 'short' });
+    const fname = `${Date.now()}_${props.data.id}.mp4`;
+    const response = await CapacitorHttp.request({
+        url: fallback_url,
+        method: 'GET',
+        responseType: 'blob'
+    }).catch(() => null);
+    if (!response || response.status >= 400 || !response.data) {
+        Toast.show({ text: t('download_failed'), duration: 'short' });
+        downloading.value = false;
+        return;
+    }
+    try {
+        await Filesystem.writeFile({
+            path: `Movies/Redly/${fname}`,
+            data: response.data,
+            directory: Directory.ExternalStorage,
+            recursive: true
+        });
+        Toast.show({ text: t('video_saved').replace('{name}', fname), duration: 'short' });
+    } catch (e) {
+        Toast.show({ text: t('save_failed'), duration: 'short' });
+        console.error(e);
+    }
+    downloading.value = false;
 }
 
 async function play() {

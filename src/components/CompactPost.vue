@@ -73,6 +73,7 @@ import { store, hide, unhide, save_post, unsave_post, is_saved } from '/js/store
 import { t } from '/js/i18n.js';
 import { useRouter } from 'vue-router';
 import { Share } from '@capacitor/share';
+import { format_relative_time } from '/js/util.js';
 import Placeholder from '/contents/Placeholder.vue';
 import CompactText from '/contents/CompactText.vue';
 import CompactImage from '/contents/CompactImage.vue';
@@ -148,20 +149,9 @@ async function open_subreddit() {
     router.push(`/r/${props.post.subreddit}`);
 }
 
-// Return when the post was created
-// Format: 1h ago, 1d ago, 1w ago, 1m ago, 1y ago
+// Return when the post was created (localised via i18n)
 function format_date() {
-    let dt = new Date(props.post.created * 1000);
-    let now = new Date();
-
-    let diff = now - dt;
-
-    if (diff < 1000 * 60 * 60) return `${Math.floor(diff / (1000 * 60))}m ago`;
-    if (diff < 1000 * 60 * 60 * 24) return `${Math.floor(diff / (1000 * 60 * 60))}h ago`;
-    if (diff < 1000 * 60 * 60 * 24 * 7) return `${Math.floor(diff / (1000 * 60 * 60 * 24))}d ago`;
-    if (diff < 1000 * 60 * 60 * 24 * 30) return `${Math.floor(diff / (1000 * 60 * 60 * 24 * 7))}w ago`;
-    if (diff < 1000 * 60 * 60 * 24 * 365) return `${Math.floor(diff / (1000 * 60 * 60 * 24 * 30))}m ago`;
-    return `${Math.floor(diff / (1000 * 60 * 60 * 24 * 365))}y ago`;
+    return format_relative_time(props.post.created);
 }
 
 function format_num(points) {
@@ -206,7 +196,7 @@ async function get_type() {
         return
     }
 
-    if (props.post.url_overridden_by_dest.startsWith('https://www.reddit.com/gallery/')) {
+    if (props.post.url_overridden_by_dest?.startsWith('https://www.reddit.com/gallery/')) {
         type.value = "CompactGallery";
         return
     }

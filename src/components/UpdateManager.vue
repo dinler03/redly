@@ -5,14 +5,13 @@
                 <div class="modal-header foreground rounded-top border-0 pb-0">
                     <h5 class="modal-title text-6">{{ t('update_available') }}</h5>
                     <button type="button" class="btn btn-touch bi bi-x-lg text-6" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                        :aria-label="t('update_close')"></button>
                 </div>
                 <div class="modal-body foreground rounded-bottom">
                     <div class="d-flex flex-column">
                         <h5 v-if="latest_release" class="text-11">{{ latest_release.tag_name }}</h5>
                         <div ref="body" class="release-body d-flex flex-column text-4 border rounded p-3" />
-                        <p class="text-4 mt-3 mb-0">Clicking the update button will download the latest release from our
-                            GitHub repository and bypass F-Droid's checks if you have downloaded the app from there.</p>
+                        <p class="text-4 mt-3 mb-0">{{ t('update_body_info') }}</p>
                         <button class="btn btn-touch bg-10 mt-3" @click="update">{{ t('update') }}</button>
                         <button class="btn btn-touch bg-10 mt-2" @click="dont_ask">{{ t('dont_ask') }}</button>
                     </div>
