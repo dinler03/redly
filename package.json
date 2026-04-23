@@ -1,16 +1,16 @@
 {
-  "name": "redly",
+  "name": "redly-android",
   "version": "0.1.1",
   "description": "Redly — Reddit, quietly. A fast, minimal, read-only Reddit client for Android.",
   "license": "GPL-3.0-or-later",
   "author": "dinler03",
-  "homepage": "https://github.com/dinler03/redly#readme",
+  "homepage": "https://github.com/dinler03/redly-android#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dinler03/redly.git"
+    "url": "https://github.com/dinler03/redly-android.git"
   },
   "bugs": {
-    "url": "https://github.com/dinler03/redly/issues"
+    "url": "https://github.com/dinler03/redly-android/issues"
   },
   "scripts": {
     "dev": "vite",
