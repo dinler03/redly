@@ -43,7 +43,7 @@ You do **not** need to install Gradle separately — the Gradle wrapper
 ### Setup
 
 ```bash
-git clone https://github.com/dinler03/redly.git
+git clone https://github.com/dinler03/redly-android.git
 cd redly
 npm install
 ```
