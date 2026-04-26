@@ -47,11 +47,20 @@
 import { ref, onBeforeUnmount, onBeforeMount, onMounted, onDeactivated } from 'vue';
 import Hls from 'hls.js';
 import { useIntersectionObserver } from '@vueuse/core'
-import { CapacitorHttp } from '@capacitor/core';
+import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Toast } from '@capacitor/toast';
 import { t } from '/js/i18n.js';
 import { ensure_storage_permission } from '/js/util.js';
+
+// Lazy-import the native VideoMux plugin only on native platforms.
+// On web it is unavailable and we fall back to video-only download.
+let VideoMux = null;
+if (Capacitor.isNativePlatform()) {
+    import('@capacitor/core').then(({ registerPlugin }) => {
+        VideoMux = registerPlugin('VideoMux');
+    });
+}
 
 let hls = null;
 const video = ref(null);
@@ -92,19 +101,67 @@ async function mute() {
 
 async function download() {
     if (downloading.value) return;
-    const fallback_url = props.data.secure_media?.reddit_video?.fallback_url;
+
+    const reddit_video = props.data.secure_media?.reddit_video;
+    const fallback_url = reddit_video?.fallback_url;
     if (!fallback_url) {
         Toast.show({ text: t('video_url_missing'), duration: 'short' });
         return;
     }
     if (!(await ensure_storage_permission(Filesystem, Toast))) return;
+
     downloading.value = true;
     Toast.show({ text: t('downloading'), duration: 'short' });
+
     const fname = `${Date.now()}_${props.data.id}.mp4`;
+
+    // Build audio URL candidates from the video base URL.
+    // Reddit ships audio in a separate file at the same v.redd.it path.
+    // File naming has changed several times; probe all known patterns.
+    const audio_candidates = [];
+    const base_match = fallback_url.match(/^(https:\/\/v\.redd\.it\/[^/?#]+)\//i);
+    if (base_match) {
+        const base = base_match[1];
+        audio_candidates.push(
+            `${base}/CMAF_AUDIO_128.mp4`,   // 2024+ (primary)
+            `${base}/CMAF_AUDIO_64.mp4`,
+            `${base}/DASH_AUDIO_128.mp4`,   // 2022–2024
+            `${base}/DASH_AUDIO_64.mp4`,
+            `${base}/DASH_audio.mp4`,        // pre-2022
+        );
+    }
+
+    // Use the native VideoMux plugin when available (muxes video + audio
+    // on-device with Android's MediaMuxer — no quality loss, no ffmpeg).
+    if (VideoMux && audio_candidates.length > 0) {
+        try {
+            // Resolve the absolute path for ExternalStorage/Movies/Redly/
+            const dir = await Filesystem.getUri({
+                path: `Movies/Redly/${fname}`,
+                directory: Directory.ExternalStorage,
+            });
+            const result = await VideoMux.muxAndSave({
+                videoUrl: fallback_url,
+                audioCandidates: audio_candidates,
+                outputPath: dir.uri,
+            });
+            Toast.show({
+                text: t('video_saved').replace('{name}', fname),
+                duration: 'short',
+            });
+            downloading.value = false;
+            return;
+        } catch (e) {
+            console.warn('VideoMux failed, falling back to video-only download', e);
+        }
+    }
+
+    // Fallback: download video-only stream directly (web or plugin unavailable)
+    const { CapacitorHttp } = await import('@capacitor/core');
     const response = await CapacitorHttp.request({
         url: fallback_url,
         method: 'GET',
-        responseType: 'blob'
+        responseType: 'blob',
     }).catch(() => null);
     if (!response || response.status >= 400 || !response.data) {
         Toast.show({ text: t('download_failed'), duration: 'short' });
@@ -116,7 +173,7 @@ async function download() {
             path: `Movies/Redly/${fname}`,
             data: response.data,
             directory: Directory.ExternalStorage,
-            recursive: true
+            recursive: true,
         });
         Toast.show({ text: t('video_saved').replace('{name}', fname), duration: 'short' });
     } catch (e) {

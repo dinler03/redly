@@ -78,7 +78,8 @@ cd android && ./gradlew assembleDebug
 │   │   └── src/main/
 │   │       ├── AndroidManifest.xml     # intent filters for Reddit links
 │   │       ├── java/app/redly/client/
-│   │       │   └── MainActivity.java   # bundle id: app.redly.client
+│   │       │   ├── MainActivity.java   # bundle id: app.redly.client
+│   │       │   └── VideoMuxPlugin.java # native video+audio mux (MediaMuxer)
 │   │       └── res/
 │   │           ├── mipmap-*/           # launcher icons (Ember Dark)
 │   │           ├── drawable-*/         # splash screens
@@ -114,14 +115,20 @@ cd android && ./gradlew assembleDebug
 │   │
 │   ├── contents/                       # post body renderers
 │   │   ├── FullImage.vue / FullText.vue / FullVideo.vue
-│   │   ├── CompactLink.vue / CompactVideo.vue
-│   │   └── Gallery.vue
+│   │   ├── CompactLink.vue / CompactVideo.vue / CompactEmbed.vue
+│   │   ├── FullGallery.vue / CompactGallery.vue
+│   │   ├── RedgifsVideo.vue            # Redgifs API v2 player (HD URL + audio)
+│   │   ├── YouTubeEmbed.vue            # YouTube iframe embed
+│   │   ├── PollView.vue
+│   │   └── Placeholder.vue
 │   │
 │   ├── js/
 │   │   ├── main.js                     # entry point + localStorage defaults
 │   │   ├── redly.js                    # Reddit JSON client (`class Redly`)
 │   │   ├── store.js                    # global reactive state
 │   │   ├── i18n.js                     # reactive translation layer
+│   │   ├── media.js                    # Redgifs API v2 helpers, YouTube ID extraction
+│   │   ├── util.js                     # shared helpers (time formatting, permissions)
 │   │   └── event.js                    # cross-component event bus
 │   │
 │   ├── router/
@@ -288,6 +295,31 @@ exactly that filename when downloading updates inside the app.
   always `app.redly.client`.
 - **No tests yet.** Verify changes by running the dev server and the Android
   debug build.
+
+---
+
+## Native Capacitor plugins
+
+Custom plugins live in `android/app/src/main/java/app/redly/client/` and are
+registered in `MainActivity.onCreate()` before `super.onCreate()`.
+
+### `VideoMuxPlugin` (`name = "VideoMux"`)
+
+Exposed method: `muxAndSave({ videoUrl, audioCandidates[], outputPath })`
+
+Downloads a video-only MP4 (`videoUrl`) and probes each entry in
+`audioCandidates` in order, downloading the first that returns HTTP 200.
+If audio is found, Android's `MediaMuxer` combines the two tracks into a
+single `.mp4` at `outputPath`. If no audio candidate responds, the video-only
+file is copied to `outputPath` instead. All network I/O and muxing run on a
+background thread; the call resolves on the UI thread.
+
+Called by `FullVideo.vue` → `download()` via:
+```js
+import { registerPlugin } from '@capacitor/core';
+const VideoMux = registerPlugin('VideoMux');
+await VideoMux.muxAndSave({ videoUrl, audioCandidates, outputPath });
+```
 
 ---
 

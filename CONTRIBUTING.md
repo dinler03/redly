@@ -103,7 +103,10 @@ The most important entry points are:
 - `src/js/redly.js` — Reddit JSON client (`class Redly`)
 - `src/js/store.js` — global reactive state
 - `src/js/main.js` — app entry + `localStorage` defaults
+- `src/js/media.js` — Redgifs API v2 helpers, YouTube ID extraction
 - `src/assets/redly.css` — Ember Dark color palette
+- `android/app/src/main/java/app/redly/client/VideoMuxPlugin.java` — native
+  Capacitor plugin for on-device video+audio muxing (uses `MediaMuxer`)
 
 ## Coding style
 
@@ -137,6 +140,8 @@ The most important entry points are:
    make sure both succeed.
 4. If your change touches the UI, manually test the affected screens
    (home feed, post detail, video playback, settings).
+   If your change touches `VideoMuxPlugin.java` or download logic, test with a
+   Reddit video that has audio and verify the saved `.mp4` plays back with sound.
 5. Open a pull request against `main`. The
    [PR template](./.github/PULL_REQUEST_TEMPLATE.md) will guide you through
    the checklist.

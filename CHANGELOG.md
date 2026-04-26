@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`VideoMuxPlugin`** — new native Capacitor plugin (`app.redly.client`)
+  that downloads a Reddit video-only DASH stream and its matching audio-only
+  stream, then combines them on-device using Android's `MediaMuxer`. No
+  third-party libraries required. Called automatically by `FullVideo.vue`
+  when the user taps the download button.
+
+### Fixed
+
+- **Video downloads now include audio.** Previously the download button saved
+  the video-only DASH fallback URL (`DASH_1080.mp4`) which has no audio.
+  The new `VideoMuxPlugin` probes the five known Reddit audio filename
+  candidates (`CMAF_AUDIO_128.mp4`, `CMAF_AUDIO_64.mp4`,
+  `DASH_AUDIO_128.mp4`, `DASH_AUDIO_64.mp4`, `DASH_audio.mp4`) and muxes
+  the first one that responds HTTP 200 with the video track. Falls back
+  gracefully to the video-only file if no audio stream is found.
+- **Redgifs fullscreen distortion fixed.** `RedgifsVideo.vue` previously
+  forced `aspect-ratio: 16/9` on every video element, squishing portrait
+  and square Redgifs content. The aspect ratio is now computed from
+  `videoWidth` / `videoHeight` after `loadedmetadata` fires. `object-fit:
+  contain` ensures letterboxing/pillarboxing in fullscreen rather than
+  stretching.
+
 ## [0.1.1] — 2026-04-23
 
 ### Changed

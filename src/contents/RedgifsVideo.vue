@@ -13,16 +13,32 @@
         </div>
 
         <!-- Video player -->
-        <video
-            v-else
-            :src="videoUrl"
-            :poster="posterUrl || undefined"
-            controls
-            loop
-            playsinline
-            style="width: 100%; display: block; aspect-ratio: 16/9; background: #000;"
-            class="md-rounded-12"
-        ></video>
+        <div v-else class="position-relative">
+            <video
+                ref="video"
+                :src="videoUrl"
+                :poster="posterUrl || undefined"
+                controls
+                loop
+                playsinline
+                webkit-playsinline
+                preload="metadata"
+                :style="videoStyle"
+                class="md-rounded-12"
+                @loadedmetadata="onLoaded"
+                @volumechange="onVolumeChange"
+            ></video>
+            <!-- Manual unmute overlay — Android WebView's native video controls
+                 don't always expose a mute button, and some videos start muted. -->
+            <button
+                v-if="muted && hasAudio"
+                type="button"
+                class="md-icon-button md-foreground-50 el-3 redgifs-unmute"
+                @click.stop="toggleMute"
+            >
+                <span class="material-icons">volume_off</span>
+            </button>
+        </div>
     </div>
 </template>
 
@@ -41,6 +57,12 @@ const loading = ref(true);
 const error = ref(null);
 const videoUrl = ref(null);
 const posterUrl = ref(null);
+const video = ref(null);
+const muted = ref(false);
+const hasAudio = ref(true);
+// Start with no aspect-ratio so the container doesn't reserve incorrect space
+// before metadata loads. After loadedmetadata we set the real ratio.
+const videoStyle = ref('width:100%;display:block;background:#000;object-fit:contain;');
 
 // Decode HTML entities using a textarea element (browser-native approach)
 function decodeHtmlEntities(str) {
@@ -49,8 +71,47 @@ function decodeHtmlEntities(str) {
     return txt.value;
 }
 
+function onLoaded() {
+    if (!video.value) return;
+    // Force unmuted at full volume — some Android WebView builds default
+    // freshly attached <video> elements to muted regardless of attributes.
+    video.value.muted = false;
+    video.value.volume = 1.0;
+    muted.value = video.value.muted;
+    // Detect audio track presence (vendor-prefixed APIs).
+    hasAudio.value =
+        video.value.mozHasAudio ||
+        Boolean(video.value.webkitAudioDecodedByteCount) ||
+        Boolean(video.value.audioTracks && video.value.audioTracks.length) ||
+        true; // fall back to assuming audio exists; user can toggle off
+
+    // Apply the video's real aspect ratio so the player never distorts the
+    // image. object-fit:contain ensures fullscreen also letterboxes/pillarboxes
+    // correctly without stretching.
+    const w = video.value.videoWidth;
+    const h = video.value.videoHeight;
+    if (w && h) {
+        videoStyle.value =
+            `width:100%;display:block;background:#000;object-fit:contain;aspect-ratio:${w}/${h};`;
+    }
+}
+
+function onVolumeChange() {
+    if (!video.value) return;
+    muted.value = video.value.muted;
+}
+
+function toggleMute() {
+    if (!video.value) return;
+    video.value.muted = !video.value.muted;
+    if (!video.value.muted && video.value.paused) {
+        video.value.play().catch(() => { /* user gesture required, ignore */ });
+    }
+}
+
 onMounted(async function load() {
-    const gifId = extractRedgifsId(props.data.url || props.data.url_overridden_by_dest || '');
+    const url = props.data.url || props.data.url_overridden_by_dest || '';
+    const gifId = extractRedgifsId(url);
 
     if (!gifId) {
         error.value = 'Invalid Redgifs URL';
@@ -60,10 +121,22 @@ onMounted(async function load() {
 
     try {
         const urls = await fetchRedgifsUrls(gifId);
-        videoUrl.value = urls.hd || urls.sd;
+        // Prefer HD (carries the audio track). Skip `sd` when it points at the
+        // `-mobile.mp4` silent variant; only use sd as a last resort.
+        const hd = urls.hd;
+        const sd = urls.sd;
+        if (hd) {
+            videoUrl.value = hd;
+        } else if (sd) {
+            videoUrl.value = sd;
+        } else {
+            throw new Error('No playable Redgifs URL');
+        }
         posterUrl.value = urls.poster || urls.thumbnail || null;
     } catch (e) {
-        // Try Reddit-provided fallback video URLs before showing an error
+        // Try Reddit-provided fallback video URLs before showing an error.
+        // These come from Reddit's own CDN and are reachable when Redgifs's
+        // primary domain is filtered.
         const fallbackUrl = props.data.preview?.reddit_video_preview?.fallback_url;
         if (fallbackUrl) {
             videoUrl.value = decodeHtmlEntities(fallbackUrl);
@@ -75,8 +148,22 @@ onMounted(async function load() {
                 error.value = 'Redgifs is unavailable in your region.';
             }
         }
+        // Use Reddit preview as poster too, if available
+        const previewUrl = props.data.preview?.images?.[0]?.source?.url;
+        if (previewUrl && !posterUrl.value) {
+            posterUrl.value = decodeHtmlEntities(previewUrl);
+        }
     } finally {
         loading.value = false;
     }
 });
 </script>
+
+<style scoped>
+.redgifs-unmute {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+}
+</style>

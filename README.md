@@ -41,8 +41,12 @@ distributed as an Android application.
 
 - Browse posts, comments, subreddits, and users
 - View images, GIFs, galleries, and HLS videos
+- Redgifs video playback (Redgifs API v2, HD stream with audio)
+- YouTube embed playback inside the app
 - Follow your favorite communities locally — no account required
-- Save posts and images to device storage
+- **Download videos with audio** — Reddit videos are downloaded as a single
+  muxed `.mp4` (video + audio combined on-device via Android `MediaMuxer`)
+- Save images to device storage
 - Linear comment trees with collapse / expand
 - Share posts as standard or `old.reddit.com` links
 - Search posts, subreddits, and users
@@ -124,7 +128,8 @@ For a deeper walkthrough of the architecture, the directory layout, the
 | Styling      | Bootstrap 5 SCSS + Material Design 3 + Ember Dark palette |
 | State        | Vue `reactive()` + `localStorage` |
 | Markdown     | `marked`, `showdown` |
-| Video        | `hls.js` |
+| Video        | `hls.js` (HLS playback) + native `VideoMuxPlugin` (audio mux) |
+| Redgifs      | Redgifs API v2 (direct HD MP4 URL) |
 | Search       | `fuse.js` |
 | Gestures     | `hammerjs` |
 

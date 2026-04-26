@@ -22,6 +22,7 @@ Thank you for contributing to Redly! Please fill in the sections below.
 - [ ] My change does not introduce user tracking or telemetry.
 - [ ] `npm run build` succeeds locally.
 - [ ] `cd android && ./gradlew assembleDebug` succeeds locally.
+- [ ] If I changed `VideoMuxPlugin.java` or download logic, I tested video download with audio on a real device or emulator.
 - [ ] I have updated [`CHANGELOG.md`](../blob/main/CHANGELOG.md) under `[Unreleased]` if relevant.
 - [ ] I have updated documentation if behavior changed.
 
