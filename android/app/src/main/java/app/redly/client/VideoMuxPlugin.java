@@ -33,16 +33,18 @@ public class VideoMuxPlugin extends Plugin {
     private static final int BUF_SIZE           = 64 * 1024; // 64 KB
 
     /**
-     * muxAndSave({ videoUrl, audioCandidates[], outputPath })
+     * muxAndSave({ videoUrl, audioUrl, outputPath })
      *
-     * Tries each URL in audioCandidates in order. Uses the first one that
-     * returns HTTP 200. If none succeed the video is saved without audio
-     * (same behaviour as before this plugin existed).
+     * audioUrl is probed by JS (HEAD requests) before this method is called,
+     * so it is either a confirmed-working URL or an empty string.
+     * When audioUrl is empty the video is saved without audio.
      */
     @PluginMethod
     public void muxAndSave(PluginCall call) {
-        final String videoUrl   = call.getString("videoUrl");
-        final String rawOutput  = call.getString("outputPath");
+        final String videoUrl  = call.getString("videoUrl");
+        final String rawOutput = call.getString("outputPath");
+        // audioUrl is probed by JS before calling us; empty string means no audio found.
+        final String audioUrl  = call.getString("audioUrl", "");
 
         if (videoUrl == null || rawOutput == null) {
             call.reject("videoUrl and outputPath are required");
@@ -55,23 +57,11 @@ public class VideoMuxPlugin extends Plugin {
                 ? android.net.Uri.parse(rawOutput).getPath()
                 : rawOutput;
 
-        // audioCandidates is a JSON array of strings
-        final com.getcapacitor.JSArray rawCandidates = call.getArray("audioCandidates");
-        final String[] audioCandidates;
-        if (rawCandidates != null && rawCandidates.length() > 0) {
-            String[] tmp = new String[rawCandidates.length()];
-            for (int i = 0; i < rawCandidates.length(); i++) {
-                try { tmp[i] = rawCandidates.getString(i); } catch (Exception e) { tmp[i] = null; }
-            }
-            audioCandidates = tmp;
-        } else {
-            audioCandidates = new String[0];
-        }
-
         new Thread(() -> {
             try {
-                // Ensure output directory exists
+                // Ensure output directory exists; remove any leftover partial file.
                 new File(outputPath).getParentFile().mkdirs();
+                new File(outputPath).delete();
 
                 // Download video track to a temp file
                 File videoTemp = downloadToTemp(videoUrl, "redly_v");
@@ -80,34 +70,26 @@ public class VideoMuxPlugin extends Plugin {
                     return;
                 }
 
-                // Try each audio candidate until one succeeds
-                File audioTemp = null;
-                for (String candidate : audioCandidates) {
-                    if (candidate == null) continue;
-                    File f = downloadToTemp(candidate, "redly_a");
-                    if (f != null) {
-                        audioTemp = f;
-                        break;
-                    }
-                }
-
                 boolean muxed = false;
-                if (audioTemp != null) {
-                    try {
-                        mux(videoTemp.getAbsolutePath(),
-                            audioTemp.getAbsolutePath(),
-                            outputPath);
-                        muxed = true;
-                    } catch (Exception e) {
-                        // Mux failed (e.g. incompatible codec container) —
-                        // fall through to video-only copy.
-                    } finally {
-                        audioTemp.delete();
+                if (audioUrl != null && !audioUrl.isEmpty()) {
+                    File audioTemp = downloadToTemp(audioUrl, "redly_a");
+                    if (audioTemp != null) {
+                        try {
+                            mux(videoTemp.getAbsolutePath(),
+                                audioTemp.getAbsolutePath(),
+                                outputPath);
+                            muxed = true;
+                        } catch (Exception e) {
+                            // Mux failed — remove partial output, fall through to copy.
+                            new File(outputPath).delete();
+                        } finally {
+                            audioTemp.delete();
+                        }
                     }
                 }
 
                 if (!muxed) {
-                    // Fall back: copy video-only file as-is
+                    // No audio or mux failed: save video-only.
                     copyFile(videoTemp, new File(outputPath));
                 }
 
@@ -185,7 +167,9 @@ public class VideoMuxPlugin extends Plugin {
             muxer.start();
 
             MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
-            ByteBuffer buf = ByteBuffer.allocate(1024 * 1024); // 1 MB
+            // 4 MB — large enough for 1080p keyframes (Reddit H.264 IDR frames
+            // can exceed 1 MB; 4 MB gives headroom without excessive allocation).
+            ByteBuffer buf = ByteBuffer.allocate(4 * 1024 * 1024);
 
             // Write all video samples
             while (true) {
